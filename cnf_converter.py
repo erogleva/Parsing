@@ -5,11 +5,7 @@ from models import Rule
 
 
 def _get_variables(rules):
-    variables_set = set()
-    for r in rules:
-        # append the right hand side of every rule to the set of variables
-        variables_set.add(r.LHS)
-    return variables_set
+    return {r.LHS for r in rules}
 
 
 def _get_terminals(rules):
@@ -22,15 +18,11 @@ def _get_terminals(rules):
 
 
 def _check_start_symbol_rhs(rules, start_symbol):
-    for r in rules:
-        if r.contains_start_symbol(start_symbol):
-            return True
+    return next((r for r in rules if r.contains_start_symbol(start_symbol)), None)
 
 
 def _find_nullable_variable(rules):
-    for r in rules:
-        if r.is_epsilon_production():
-            return r.LHS
+    return next((r.LHS for r in rules if r.is_epsilon_production()), None)
 
 
 def _eliminate_epsilon(rules, nullable_var):
@@ -41,14 +33,12 @@ def _eliminate_epsilon(rules, nullable_var):
                 # append epsilon rule if it was a unit production
                 updated_rules = updated_rules + [Rule(r.LHS, ['/'])]
                 updated_rules = updated_rules + [Rule(r.LHS, r.RHS)]
-                continue
             else:
                 # new combinations which omit every possible subset of the nullable variables
                 new_rules = utils.create_combinations(r.RHS, nullable_var)
                 for created_rule in new_rules:
                     updated_rules.append(Rule(r.LHS, created_rule))
-                continue
-        if r.LHS == nullable_var and r.RHS[0] == '/':
+        elif r.LHS == nullable_var and r.RHS[0] == '/':
             # don't append the original epsilon rule
             continue
         else:
@@ -63,15 +53,11 @@ def _eliminate_recursive_units(rules):
 
 
 def _find_unit_production(rules, variables_set):
-    for r in rules:
-        if r.is_unit_production(variables_set):
-            return r
+    return next((r for r in rules if r.is_unit_production(variables_set)), None)
 
 
 def _find_long_production(rules):
-    for r in rules:
-        if r.has_long_production():
-            return r
+    return next((r for r in rules if r.has_long_production()), None)
 
 
 def _eliminate_unit_productions(rules, unit_prod):

@@ -1,10 +1,4 @@
 S
-S -> NP VP
-NP -> Det N | Det N PP | P Det NP | N NP | N Punc
-VP -> V NP | V NP PP | V
-PP -> P NP
-Det -> 'the' | 'a'
-N -> 'man' | 'park' | 'woman' | 'dog' | 'cookie'
-V -> 'saw' | 'was'
-P -> 'in' | 'with'
-Punc -> '.'
+S -> 'a' X 'b' X
+X -> 'a' Y | 'b' Y | /
+Y -> X | 'c'

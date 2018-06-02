@@ -1,5 +1,6 @@
 from cnf_converter import convert_to_cnf
 from models import Rule
+from cyk_parser import parse
 
 
 def preprocess_rules(rules):
@@ -34,3 +35,5 @@ production_rules = preprocess_rules(initial_rules)
 
 production_rules = convert_to_cnf(production_rules, start_symbol)
 print_rules(production_rules)
+
+parse(production_rules)
