@@ -48,7 +48,7 @@ def _eliminate_epsilon(rules, nullable_var):
 
 
 def _eliminate_recursive_units(rules):
-    updated_rules = [x for x in rules if not x.is_recursive_unit()]
+    updated_rules = [r for r in rules if not r.is_recursive_unit()]
     return updated_rules
 
 

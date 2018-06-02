@@ -1,6 +1,7 @@
 from cnf_converter import convert_to_cnf
 from models import Rule
-from cyk_parser import parse
+from cyk_parser import construct_cyk_chart
+import re
 
 
 def preprocess_rules(rules):
@@ -26,14 +27,25 @@ def print_rules(rules):
         print(r.LHS + ' -> ' + ' '.join(r.RHS))
 
 
+def strip_quotation_marks(rules):
+    updated_rules = []
+    for r in rules:
+        terminal = re.match(r"\'(.+)\'", r.RHS[0])
+        if terminal:
+            updated_rules.append(Rule(r.LHS, [terminal.group(1)]))
+        else:
+            updated_rules.append(r)
+    return updated_rules
+
 # MAIN
-source = open('grammar4.txt').readlines()
+source = open('grammar7.txt').readlines()
 initial_rules = [line.strip() for line in source]
 
 start_symbol = initial_rules.pop(0)
 production_rules = preprocess_rules(initial_rules)
 
 production_rules = convert_to_cnf(production_rules, start_symbol)
+production_rules = strip_quotation_marks(production_rules)
 print_rules(production_rules)
 
-parse(production_rules)
+construct_cyk_chart(production_rules, 'b a a b a')
