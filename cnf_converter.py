@@ -23,13 +23,13 @@ def _get_terminals(rules):
 
 def _check_start_symbol_rhs(rules, start_symbol):
     for r in rules:
-        if start_symbol in r.RHS:
+        if r.contains_start_symbol(start_symbol):
             return True
 
 
 def _find_nullable_variable(rules):
     for r in rules:
-        if r.RHS[0] == '/':
+        if r.is_epsilon_production():
             return r.LHS
 
 
@@ -58,35 +58,32 @@ def _eliminate_epsilon(rules, nullable_var):
 
 
 def _eliminate_recursive_units(rules):
-    updated_rules = [x for x in rules if x.LHS != x.RHS[0] or len(x.RHS) != 1]
+    updated_rules = [x for x in rules if not x.is_recursive_unit()]
     return updated_rules
 
 
 def _find_unit_production(rules, variables_set):
     for r in rules:
-        if len(r.RHS) == 1 and r.RHS[0] in variables_set:
+        if r.is_unit_production(variables_set):
             return r
 
 
 def _find_long_production(rules):
     for r in rules:
-        if len(r.RHS) > 2:
+        if r.has_long_production():
             return r
 
 
 def _eliminate_unit_productions(rules, unit_prod):
     updated_rules = list(filter(lambda x: x.LHS != unit_prod.LHS or len(x.RHS) != 1 or x.RHS[0] != unit_prod.RHS[0], rules))
-    new_rules = []
-    for r in rules:
-        if r.LHS == unit_prod.RHS[0]:
-            new_rules.append(Rule(unit_prod.LHS, r.RHS))
+    new_rules = [Rule(unit_prod.LHS, r.RHS) for r in rules if r.LHS == unit_prod.RHS[0]]
     updated_rules = updated_rules + new_rules
     return updated_rules
 
 
 def _check_if_terminal_needs_to_be_replaced(rules, term):
     for r in rules:
-        if term in r.RHS[0] and len(r.RHS) > 1:
+        if term in r.RHS and len(r.RHS) > 1:
             return True
 
 
@@ -125,8 +122,8 @@ def convert_to_cnf(rules, start_symbol):
     # Eliminate start symbol on RHS
 
     if _check_start_symbol_rhs(production_rules, start_symbol):
-        production_rules = [Rule(start_symbol + 'O', [start_symbol])] + production_rules
-        variables.add(start_symbol + '0')
+        production_rules = [Rule(start_symbol + '1', [start_symbol])] + production_rules
+        variables.add(start_symbol + '1')
 
     # Eliminate epsilon productions
 

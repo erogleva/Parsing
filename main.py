@@ -26,7 +26,7 @@ def print_rules(rules):
 
 
 # MAIN
-source = open('grammar5.txt').readlines()
+source = open('grammar4.txt').readlines()
 initial_rules = [line.strip() for line in source]
 
 start_symbol = initial_rules.pop(0)
