@@ -1,3 +1,6 @@
+import re
+
+
 class Rule:
     def __init__(self, lhs, rhs):
         self.LHS = lhs  # string
@@ -17,3 +20,31 @@ class Rule:
 
     def is_recursive_unit(self):
         return self.LHS == self.RHS[0] and len(self.RHS) == 1
+
+
+class Grammar:
+    def __init__(self, start_symbol, rules):
+        self.start_symbol = start_symbol
+        self._rules = rules
+        self.terminals = self._set_terminals()
+        self.variables = self._set_variables()
+
+    @property
+    def rules(self):
+        return self._rules
+
+    @rules.setter
+    def rules(self, value):
+        self._rules = value
+        self.variables = self._set_variables()
+
+    def _set_variables(self):
+        return {r.LHS for r in self._rules}
+
+    def _set_terminals(self):
+        terminals_set = set()
+        for r in self._rules:
+            for symbol in r.RHS:
+                if re.match(r"\'(.+)\'", symbol):
+                    terminals_set.add(symbol)
+        return terminals_set

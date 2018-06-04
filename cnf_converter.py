@@ -1,21 +1,11 @@
-import re
 import utils
 from string import ascii_uppercase
-from models import Rule
+from models import Rule, Grammar
 
 
-def _get_variables(rules):
-    return {r.LHS for r in rules}
-
-
-def _get_terminals(rules):
-    terminals_set = set()
+def print_rules(rules):
     for r in rules:
-        for symbol in r.RHS:
-            if re.match(r"\'(.+)\'", symbol):
-                terminals_set.add(symbol)
-    return terminals_set
-
+        print(r.LHS + ' -> ' + ' '.join(r.RHS))
 
 def _check_start_symbol_rhs(rules, start_symbol):
     return next((r for r in rules if r.contains_start_symbol(start_symbol)), None)
@@ -61,7 +51,8 @@ def _find_long_production(rules):
 
 
 def _eliminate_unit_productions(rules, unit_prod):
-    updated_rules = list(filter(lambda x: x.LHS != unit_prod.LHS or len(x.RHS) != 1 or x.RHS[0] != unit_prod.RHS[0], rules))
+    updated_rules = list(
+        filter(lambda x: x.LHS != unit_prod.LHS or len(x.RHS) != 1 or x.RHS[0] != unit_prod.RHS[0], rules))
     new_rules = [Rule(unit_prod.LHS, r.RHS) for r in rules if r.LHS == unit_prod.RHS[0]]
     updated_rules = updated_rules + new_rules
     return updated_rules
@@ -91,7 +82,7 @@ def _replace_long_productions(rules, new_rule):
         new_prod = r.RHS[:]
         if len(new_prod) > 2:
             for i in range(len(r.RHS) - 1):
-                if r.RHS[i] == new_rule.RHS[0] and r.RHS[i+1] == new_rule.RHS[1]:
+                if r.RHS[i] == new_rule.RHS[0] and r.RHS[i + 1] == new_rule.RHS[1]:
                     new_prod = new_prod[:i] + [new_rule.LHS] + new_prod[i + 2:]
         updated_rules.append(Rule(r.LHS, new_prod))
     updated_rules.append(new_rule)
@@ -99,53 +90,65 @@ def _replace_long_productions(rules, new_rule):
 
 
 def convert_to_cnf(rules, start_symbol):
-    production_rules = rules[:]
-    variables = _get_variables(production_rules)
+    grammar = Grammar(start_symbol, rules)
+    variables = grammar.variables
     available_vars = [x + '1' for x in ascii_uppercase if x != start_symbol] + [x for x in ascii_uppercase if
                                                                                 x not in variables]
-    terminals = _get_terminals(production_rules)
+    terminals = grammar.terminals
 
     # Eliminate start symbol on RHS
 
-    if _check_start_symbol_rhs(production_rules, start_symbol):
-        production_rules = [Rule(start_symbol + '1', [start_symbol])] + production_rules
+    if _check_start_symbol_rhs(grammar.rules, start_symbol):
+        grammar.rules = [Rule(start_symbol + '1', [start_symbol])] + grammar.rules
         variables.add(start_symbol + '1')
 
     # Eliminate epsilon productions
 
     while True:
-        nullable_variable = _find_nullable_variable(production_rules)
+        nullable_variable = _find_nullable_variable(grammar.rules)
         if nullable_variable:
-            production_rules = _eliminate_epsilon(production_rules, nullable_variable)
+            grammar.rules = _eliminate_epsilon(grammar.rules, nullable_variable)
         else:
             break
+
+    print('After epsilon')
+    print_rules(grammar.rules)
 
     # Eliminate unit productions
 
-    production_rules = _eliminate_recursive_units(production_rules)
+    grammar.rules = _eliminate_recursive_units(grammar.rules)
 
     while True:
-        unit_production = _find_unit_production(production_rules, variables)
+        unit_production = _find_unit_production(grammar.rules, variables)
         if unit_production:
-            production_rules = _eliminate_unit_productions(production_rules, unit_production)
+            grammar.rules = _eliminate_unit_productions(grammar.rules, unit_production)
         else:
             break
+
+    print('After unit productions')
+    print_rules(grammar.rules)
+
 
     # Replace terminals in the right hand sides
 
     for terminal in terminals:
-        if _check_if_terminal_needs_to_be_replaced(production_rules, terminal):
+        if _check_if_terminal_needs_to_be_replaced(grammar.rules, terminal):
             new_rule = Rule(available_vars.pop(), [terminal])
-            production_rules = _replace_terminals(production_rules, new_rule)
+            grammar.rules = _replace_terminals(grammar.rules, new_rule)
+
+    print('After terminals')
+    print_rules(grammar.rules)
 
     # Replace long productions
 
     while True:
-        long_production = _find_long_production(production_rules)
+        long_production = _find_long_production(grammar.rules)
         if long_production:
             new_rule = Rule(available_vars.pop(), [long_production.RHS[0], long_production.RHS[1]])
-            production_rules = _replace_long_productions(production_rules, new_rule)
+            grammar.rules = _replace_long_productions(grammar.rules, new_rule)
         else:
             break
 
-    return production_rules
+    print(grammar.variables)
+    print('After long productions')
+    return grammar.rules

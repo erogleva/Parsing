@@ -38,14 +38,17 @@ def strip_quotation_marks(rules):
     return updated_rules
 
 # MAIN
-source = open('grammar7.txt').readlines()
+source = open('grammar8.txt').readlines()
 initial_rules = [line.strip() for line in source]
 
 start_symbol = initial_rules.pop(0)
 production_rules = preprocess_rules(initial_rules)
 
+print('Initial')
+print_rules(production_rules)
+
 production_rules = convert_to_cnf(production_rules, start_symbol)
 production_rules = strip_quotation_marks(production_rules)
 print_rules(production_rules)
 
-construct_cyk_chart(production_rules, 'b a a b a')
+construct_cyk_chart(production_rules, 'a c b d e')
