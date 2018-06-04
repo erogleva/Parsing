@@ -26,8 +26,6 @@ class Grammar:
     def __init__(self, start_symbol, rules):
         self.start_symbol = start_symbol
         self._rules = rules
-        self.terminals = self._set_terminals()
-        self.variables = self._set_variables()
 
     @property
     def rules(self):
@@ -36,12 +34,13 @@ class Grammar:
     @rules.setter
     def rules(self, value):
         self._rules = value
-        self.variables = self._set_variables()
 
-    def _set_variables(self):
+    @property
+    def variables(self):
         return {r.LHS for r in self._rules}
 
-    def _set_terminals(self):
+    @property
+    def terminals(self):
         terminals_set = set()
         for r in self._rules:
             for symbol in r.RHS:
