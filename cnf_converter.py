@@ -3,10 +3,6 @@ from string import ascii_uppercase
 from models import Rule, Grammar
 
 
-def print_rules(rules):
-    for r in rules:
-        print(r.LHS + ' -> ' + ' '.join(r.RHS))
-
 def _check_start_symbol_rhs(rules, start_symbol):
     return next((r for r in rules if r.contains_start_symbol(start_symbol)), None)
 
@@ -100,7 +96,6 @@ def convert_to_cnf(rules, start_symbol):
 
     if _check_start_symbol_rhs(grammar.rules, start_symbol):
         grammar.rules = [Rule(start_symbol + '1', [start_symbol])] + grammar.rules
-        variables.add(start_symbol + '1')
 
     # Eliminate epsilon productions
 
@@ -112,7 +107,7 @@ def convert_to_cnf(rules, start_symbol):
             break
 
     print('After epsilon')
-    print_rules(grammar.rules)
+    grammar.print_rules()
 
     # Eliminate unit productions
 
@@ -126,7 +121,7 @@ def convert_to_cnf(rules, start_symbol):
             break
 
     print('After unit productions')
-    print_rules(grammar.rules)
+    grammar.print_rules()
 
 
     # Replace terminals in the right hand sides
@@ -137,7 +132,7 @@ def convert_to_cnf(rules, start_symbol):
             grammar.rules = _replace_terminals(grammar.rules, new_rule)
 
     print('After terminals')
-    print_rules(grammar.rules)
+    grammar.print_rules()
 
     # Replace long productions
 

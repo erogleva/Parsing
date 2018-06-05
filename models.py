@@ -47,3 +47,7 @@ class Grammar:
                 if re.match(r"\'(.+)\'", symbol):
                     terminals_set.add(symbol)
         return terminals_set
+
+    def print_rules(self):
+        for r in self._rules:
+            print(r.LHS + ' -> ' + ' '.join(r.RHS))

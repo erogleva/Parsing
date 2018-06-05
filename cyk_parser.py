@@ -3,7 +3,6 @@ def combine(rule1, rule2, allrules):
     for var1 in rule1:
         for var2 in rule2:
             combo = [var1, var2]
-
             for rule in allrules:
                 if rule.RHS == combo:
                     solutions.add(rule.LHS)
