@@ -6,7 +6,7 @@ import re
 
 def preprocess_rules(rules):
     # split left and right hand sides
-    updated = [r.split('->') for r in rules]
+    updated = [r.split('->') for r in rules if r != '']
     # strip unnecessary spaces
     updated = [[x.strip() for x in r] for r in updated]
 
@@ -37,8 +37,9 @@ def strip_quotation_marks(rules):
             updated_rules.append(r)
     return updated_rules
 
+
 # MAIN
-source = open('grammar8.txt').readlines()
+source = open('grammar9.txt').readlines()
 initial_rules = [line.strip() for line in source]
 
 start_symbol = initial_rules.pop(0)
