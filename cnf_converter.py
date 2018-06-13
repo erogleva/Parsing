@@ -1,6 +1,6 @@
-import utils
+from itertools import combinations
 from string import ascii_uppercase
-from models import Rule, Grammar
+from classes import Rule, Grammar
 
 
 def _check_start_symbol_rhs(rules, start_symbol):
@@ -9,6 +9,28 @@ def _check_start_symbol_rhs(rules, start_symbol):
 
 def _find_nullable_variable(rules):
     return next((r.LHS for r in rules if r.is_epsilon_production()), None)
+
+
+def _create_combinations(rule, unit):
+    new_productions = []
+    count = 0
+    u_indexes = []
+    number_to_remove = 1
+
+    for index, symbol in enumerate(rule):
+        if symbol == unit:
+            u_indexes.append(index)
+            count += 1
+
+    for i in range(count, 0, -1):
+        remove_indices = list(combinations(u_indexes, number_to_remove))
+        for combo in remove_indices:
+            new_rule = [j for k, j in enumerate(rule) if k not in combo]
+            new_productions.append(new_rule)
+        number_to_remove += 1
+
+    new_productions.append(rule)
+    return new_productions
 
 
 def _eliminate_epsilon(rules, nullable_var):
@@ -21,7 +43,7 @@ def _eliminate_epsilon(rules, nullable_var):
                 updated_rules = updated_rules + [Rule(r.LHS, r.RHS)]
             else:
                 # new combinations which omit every possible subset of the nullable variables
-                new_rules = utils.create_combinations(r.RHS, nullable_var)
+                new_rules = _create_combinations(r.RHS, nullable_var)
                 for created_rule in new_rules:
                     updated_rules.append(Rule(r.LHS, created_rule))
         elif r.LHS == nullable_var and r.RHS[0] == '/':
@@ -124,7 +146,6 @@ def convert_to_cnf(rules, start_symbol):
     print('After unit productions')
     grammar.print_rules()
 
-
     # Replace terminals in the right hand sides
 
     for terminal in terminals:
@@ -147,4 +168,5 @@ def convert_to_cnf(rules, start_symbol):
 
     print(grammar.variables)
     print('After long productions')
+
     return grammar.rules

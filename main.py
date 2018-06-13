@@ -1,6 +1,6 @@
 from cnf_converter import convert_to_cnf
-from models import Rule
-from cyk_parser import construct_cyk_chart, parse
+from classes import Rule
+from cyk_chart import construct_cyk_chart, parse
 import re
 
 
@@ -39,7 +39,7 @@ def strip_quotation_marks(rules):
 
 
 # MAIN
-source = open('grammar7.txt').readlines()
+source = open('./test_grammars/grammar7.txt').readlines()
 initial_rules = [line.strip() for line in source]
 
 start_symbol = initial_rules.pop(0)
@@ -52,5 +52,5 @@ production_rules = convert_to_cnf(production_rules, start_symbol)
 production_rules = strip_quotation_marks(production_rules)
 print_rules(production_rules)
 
-chart = construct_cyk_chart(production_rules, 'b a a b a')
-parse(chart)
+chart = construct_cyk_chart(production_rules, 'b a a b a'.split())
+parse(chart, 'b a a b a'.split())

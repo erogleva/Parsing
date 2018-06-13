@@ -59,3 +59,17 @@ class Grammar:
     def print_rules(self):
         for r in self._rules:
             print(r.LHS + ' -> ' + ' '.join(r.RHS))
+
+
+class BinaryTree():
+    def __init__(self, left=None, right=None, data=None):
+        self.left = left
+        self.right = right
+        self.data = data
+
+
+class Backpointer:
+    def __init__(self, rule, cell1, cell2):
+        self.rule = rule
+        self.cell1 = cell1
+        self.cell2 = cell2
