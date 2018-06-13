@@ -1,6 +1,6 @@
 from cnf_converter import convert_to_cnf
 from models import Rule
-from cyk_parser import construct_cyk_chart
+from cyk_parser import construct_cyk_chart, parse
 import re
 
 
@@ -52,4 +52,5 @@ production_rules = convert_to_cnf(production_rules, start_symbol)
 production_rules = strip_quotation_marks(production_rules)
 print_rules(production_rules)
 
-construct_cyk_chart(production_rules, 'b a a b a')
+chart = construct_cyk_chart(production_rules, 'b a a b a')
+parse(chart)
