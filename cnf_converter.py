@@ -96,6 +96,7 @@ def convert_to_cnf(rules, start_symbol):
 
     if _check_start_symbol_rhs(grammar.rules, start_symbol):
         grammar.rules = [Rule(start_symbol + '1', [start_symbol])] + grammar.rules
+        grammar.start_symbol = start_symbol + '1'
 
     # Eliminate epsilon productions
 

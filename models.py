@@ -24,7 +24,7 @@ class Rule:
 
 class Grammar:
     def __init__(self, start_symbol, rules):
-        self.start_symbol = start_symbol
+        self._start_symbol = start_symbol
         self._rules = rules
 
     @property
@@ -34,6 +34,14 @@ class Grammar:
     @rules.setter
     def rules(self, value):
         self._rules = value
+
+    @property
+    def start_symbol(self):
+        return self._start_symbol
+
+    @start_symbol.setter
+    def start_symbol(self, value):
+        self._start_symbol = value
 
     @property
     def variables(self):
