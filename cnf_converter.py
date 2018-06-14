@@ -129,8 +129,6 @@ def convert_to_cnf(rules, start_symbol):
         else:
             break
 
-    print('After epsilon')
-    grammar.print_rules()
 
     # Eliminate unit productions
 
@@ -143,18 +141,12 @@ def convert_to_cnf(rules, start_symbol):
         else:
             break
 
-    print('After unit productions')
-    grammar.print_rules()
-
     # Replace terminals in the right hand sides
 
     for terminal in terminals:
         if _check_if_terminal_needs_to_be_replaced(grammar.rules, terminal):
             new_rule = Rule(available_vars.pop(), [terminal])
             grammar.rules = _replace_terminals(grammar.rules, new_rule)
-
-    print('After terminals')
-    grammar.print_rules()
 
     # Replace long productions
 
@@ -165,8 +157,5 @@ def convert_to_cnf(rules, start_symbol):
             grammar.rules = _replace_long_productions(grammar.rules, new_rule)
         else:
             break
-
-    print(grammar.variables)
-    print('After long productions')
 
     return grammar.rules

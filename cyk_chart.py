@@ -1,5 +1,6 @@
 from classes import Backpointer, BinaryTree
 
+trees = []
 
 def _find_substring_matches(table_cell, table, rules):
     # helper function for the construction of the CYK-chart:
@@ -49,6 +50,18 @@ def construct_cyk_chart(rules, string):
     return chart
 
 
+def print_parse_tree(tree, indent):
+    if isinstance(tree, BinaryTree):
+        tree_str = ' ' * indent + str(tree.data)
+        if not isinstance(tree.left, BinaryTree):
+            tree_str += '-->' + tree.left
+        print(tree_str)
+        indent = indent + 2
+        print_parse_tree(tree.left, indent)
+        print_parse_tree(tree.right, indent)
+
+
+
 def _create_tree(data, cell, chart, string):
     tree = BinaryTree()
     tree.data = data
@@ -65,4 +78,11 @@ def _create_tree(data, cell, chart, string):
 
 def parse(chart, string):
     parse_tree = _create_tree('S', [len(chart) - 1, 0], chart, string)
+
+    global trees
+    for tree in trees:
+        print_parse_tree(tree, '')
+        print('---------------------------------------------------------------------------------------')
+    print_parse_tree(parse_tree, 0)
     return parse_tree
+
