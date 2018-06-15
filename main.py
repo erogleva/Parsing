@@ -1,6 +1,6 @@
 from cnf_converter import convert_to_cnf
-from classes import Rule
-from cyk_chart import construct_cyk_chart, parse
+from common import Rule
+from cyk_chart import CYK_Parser
 import re
 
 
@@ -39,18 +39,21 @@ def strip_quotation_marks(rules):
 
 
 # MAIN
-source = open('./test_grammars/grammar7.txt').readlines()
-initial_rules = [line.strip() for line in source]
+if __name__ == "__main__":
+    source = open('./test_grammars/grammar.txt').readlines()
+    initial_rules = [line.strip() for line in source]
 
-start_symbol = initial_rules.pop(0)
-production_rules = preprocess_rules(initial_rules)
+    start_symbol = initial_rules.pop(0)
+    production_rules = preprocess_rules(initial_rules)
 
-print('Initial')
-print_rules(production_rules)
+    grammar = convert_to_cnf(production_rules, start_symbol)
+    grammar.rules = strip_quotation_marks(grammar.rules)
+    grammar.print_rules()
 
-production_rules = convert_to_cnf(production_rules, start_symbol)
-production_rules = strip_quotation_marks(production_rules)
-print_rules(production_rules)
+    parser = CYK_Parser('I shot an elephant in my pajamas'.split(), grammar)
 
-chart = construct_cyk_chart(production_rules, 'b a a b a'.split())
-parse(chart, 'b a a b a'.split())
+    if parser.accepted:
+        print('String was accepted by the grammar')
+        parser.parse()
+    else:
+        print('String was rejected')

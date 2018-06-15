@@ -26,10 +26,15 @@ class Grammar:
     def __init__(self, start_symbol, rules):
         self._start_symbol = start_symbol
         self._rules = rules
+        self._terminals = self.set_terminals()
 
     @property
     def rules(self):
         return self._rules
+
+    @property
+    def terminals(self):
+        return self._terminals
 
     @rules.setter
     def rules(self, value):
@@ -47,29 +52,15 @@ class Grammar:
     def variables(self):
         return {r.LHS for r in self._rules}
 
-    @property
-    def terminals(self):
+    def set_terminals(self):
         terminals_set = set()
         for r in self._rules:
             for symbol in r.RHS:
-                if re.match(r"\'(.+)\'", symbol):
-                    terminals_set.add(symbol)
+                match = re.match(r"\'(.+)\'", symbol)
+                if match:
+                    terminals_set.add(match.group(0))
         return terminals_set
 
     def print_rules(self):
         for r in self._rules:
             print(r.LHS + ' -> ' + ' '.join(r.RHS))
-
-
-class BinaryTree():
-    def __init__(self, left=None, right=None, data=None):
-        self.left = left
-        self.right = right
-        self.data = data
-
-
-class Backpointer:
-    def __init__(self, rule, cell1, cell2):
-        self.rule = rule
-        self.cell1 = cell1
-        self.cell2 = cell2

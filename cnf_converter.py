@@ -1,6 +1,6 @@
 from itertools import combinations
 from string import ascii_uppercase
-from classes import Rule, Grammar
+from common import Rule, Grammar
 
 
 def _check_start_symbol_rhs(rules, start_symbol):
@@ -158,4 +158,4 @@ def convert_to_cnf(rules, start_symbol):
         else:
             break
 
-    return grammar.rules
+    return grammar
