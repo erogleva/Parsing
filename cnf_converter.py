@@ -107,6 +107,13 @@ def _replace_long_productions(rules, new_rule):
     return updated_rules
 
 
+def find_duplicate(rules):
+    for index, rule in enumerate(rules):
+        for i, r in enumerate(rules):
+            if r.LHS == rule.LHS and r.RHS == rule.RHS:
+                if i != index:
+                    return i
+
 def convert_to_cnf(rules, start_symbol):
     grammar = Grammar(start_symbol, rules)
     variables = grammar.variables
@@ -138,6 +145,7 @@ def convert_to_cnf(rules, start_symbol):
         unit_production = _find_unit_production(grammar.rules, variables)
         if unit_production:
             grammar.rules = _eliminate_unit_productions(grammar.rules, unit_production)
+            grammar.rules = _eliminate_recursive_units(grammar.rules)
         else:
             break
 

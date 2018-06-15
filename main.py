@@ -2,6 +2,7 @@ from cnf_converter import convert_to_cnf
 from common import Rule
 from cyk_chart import CYK_Parser
 import re
+import sys
 
 
 def preprocess_rules(rules):
@@ -40,8 +41,10 @@ def strip_quotation_marks(rules):
 
 # MAIN
 if __name__ == "__main__":
-    source = open('./test_grammars/grammar.txt').readlines()
+    source = open(sys.argv[1]).readlines()
+    sentences = open(sys.argv[2]).readlines()
     initial_rules = [line.strip() for line in source]
+    sentences = [line.strip() for line in sentences]
 
     start_symbol = initial_rules.pop(0)
     production_rules = preprocess_rules(initial_rules)
@@ -50,10 +53,10 @@ if __name__ == "__main__":
     grammar.rules = strip_quotation_marks(grammar.rules)
     grammar.print_rules()
 
-    parser = CYK_Parser('I shot an elephant in my pajamas'.split(), grammar)
-
-    if parser.accepted:
-        print('String was accepted by the grammar')
-        parser.parse()
-    else:
-        print('String was rejected')
+    for sent in sentences:
+        parser = CYK_Parser(sent.split(), grammar)
+        if parser.accepted:
+            print('String was accepted by the grammar')
+            parser.parse()
+        else:
+            print('String was rejected')

@@ -98,7 +98,7 @@ class CYK_Parser:
         if isinstance(tree, BinaryTree):
             tree_str = ' ' * indent + str(tree.data)
             if not isinstance(tree.left, BinaryTree):
-                tree_str += '-->' + tree.left
+                tree_str += '--> ' + tree.left
             print(tree_str)
             indent = indent + 2
             self.print_parse_tree(tree.left, indent)

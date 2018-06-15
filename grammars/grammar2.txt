@@ -1,0 +1,15 @@
+S
+S -> A B
+A -> PP SUB | NEGP SUB
+B -> VP
+VP -> V VPP | V
+SUB -> PREL VP
+NEGP -> NEG PP
+PP -> PIND PDET | NEG PP
+V -> 'wander' | 'is' | 'are'
+PIND -> 'all'
+PDET -> 'those'
+PREL -> 'who'
+PREL -> 'which'
+NEG -> 'not'
+VPP -> 'lost'

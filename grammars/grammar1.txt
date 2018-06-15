@@ -1,0 +1,14 @@
+S
+S -> NP VP
+NP -> Det Adj N
+NP -> P Det N
+NP -> S
+VP -> V NP
+VP -> N VP
+Det -> 'the'
+Adj -> 'stray' | /
+N -> 'dog' | 'station'
+V -> 'descended'
+P -> 'to'
+V -> 'using'
+N -> 'escalator'
