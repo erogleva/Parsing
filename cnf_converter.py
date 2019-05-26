@@ -136,7 +136,6 @@ def convert_to_cnf(rules, start_symbol):
         else:
             break
 
-
     # Eliminate unit productions
 
     grammar.rules = _eliminate_recursive_units(grammar.rules)
@@ -165,5 +164,6 @@ def convert_to_cnf(rules, start_symbol):
             grammar.rules = _replace_long_productions(grammar.rules, new_rule)
         else:
             break
+
 
     return grammar

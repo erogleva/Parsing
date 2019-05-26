@@ -1,4 +1,0 @@
-S
-S -> A S B
-A -> 'a' A S | 'a' | /
-B -> S 'b' S | A | 'b' 'b'

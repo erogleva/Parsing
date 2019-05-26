@@ -1,6 +1,6 @@
 from cnf_converter import convert_to_cnf
 from common import Rule
-from cyk_chart import CYK_Parser
+from cyk_parser import CYK_Parser
 import re
 import sys
 
@@ -21,11 +21,6 @@ def preprocess_rules(rules):
         else:
             result.append(Rule(r[0], r[1].split()))
     return result
-
-
-def print_rules(rules):
-    for r in rules:
-        print(r.LHS + ' -> ' + ' '.join(r.RHS))
 
 
 def strip_quotation_marks(rules):
@@ -51,12 +46,16 @@ if __name__ == "__main__":
 
     grammar = convert_to_cnf(production_rules, start_symbol)
     grammar.rules = strip_quotation_marks(grammar.rules)
+
+    print('Rules after CNF conversion:')
     grammar.print_rules()
+    print()
 
     for sent in sentences:
         parser = CYK_Parser(sent.split(), grammar)
         if parser.accepted:
-            print('String was accepted by the grammar')
+            print(sent + ': Accepted by the grammar')
+            print('Parse tree(s)')
             parser.parse()
         else:
-            print('String was rejected')
+            print(sent + ': Rejected by the grammar')

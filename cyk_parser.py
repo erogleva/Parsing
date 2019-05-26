@@ -21,6 +21,8 @@ class CYK_Parser:
         self.chart = self.constuct_cyk_chart()
         self.curr_variable = ''
         self.position = None
+        # these are used in order to track at which position of the chart more than one backpointer exist;
+        # the implementation is not very good currently so that probably not all possible trees are found
 
     @staticmethod
     def _find_substring_matches(table_cell, table, rules):
@@ -67,9 +69,6 @@ class CYK_Parser:
                 chart[i + 1].append(self._find_substring_matches([i, j], chart, self.grammar.rules))
 
         if self.grammar.start_symbol in chart[len(chart) - 1][0].keys():
-            print(chart[len(chart) - 1][0])
-            print(list(chart[len(chart) - 1][0].keys()))
-            print(str(self.grammar.start_symbol))
             self.accepted = True
 
         return chart
@@ -107,10 +106,13 @@ class CYK_Parser:
     def parse(self):
         parse_tree = self._create_tree(self.grammar.start_symbol, [len(self.chart) - 1, 0], 0)
         self.print_parse_tree(parse_tree, 0)
+        print()
 
         for i in range(1, self.possible_trees):
             parse_tree = self._create_tree(self.grammar.start_symbol, [len(self.chart) - 1, 0], i)
             self.print_parse_tree(parse_tree, 0)
+            print()
+
 
 
 

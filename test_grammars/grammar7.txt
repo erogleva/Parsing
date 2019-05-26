@@ -1,9 +1,0 @@
-S
-S -> A B
-S -> B C
-A -> B A
-A -> 'a'
-B -> C C
-B -> 'b'
-C -> A B
-C -> 'a'
