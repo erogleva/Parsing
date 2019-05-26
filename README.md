@@ -35,7 +35,7 @@ python main.py ./grammars/grammar2.txt ./grammars/sentences2.txt
 In order to return correct results, the input grammar should be in the following form:
 
 S<br/>
-S -> NP VP\s\s
+S -> NP VP<br/>
 NP -> Det Adj N<br/>
 NP -> P Det N<br/>
 NP -> S<br/>
